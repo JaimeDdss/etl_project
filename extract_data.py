@@ -1,6 +1,4 @@
-#Carga de dados:
-#Carregue o dataset "CEPEA_20241029160016.xls" em memória como dataframes;
-#Extraia os dados do IPCA por meio da API do Banco Central do Brasil (BCB);
+# Imports
 import pandas as pd
 import numpy as np
 import requests
