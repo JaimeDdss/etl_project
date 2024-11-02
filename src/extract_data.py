@@ -2,9 +2,11 @@
 import pandas as pd
 import numpy as np
 import requests
+from config.config import API_URL
+
 
 # Função que extrai os dados da API
-def extract_data(file_path):
+def get_data_from_api(file_path):
     try:
         response = requests.get(file_path)
         if response.status_code == 200:
@@ -19,18 +21,12 @@ def extract_data(file_path):
         print(f"Erro na requisição: {e}")
         return None
 
-# Função para carregar os dados no terminal
-def load_data(df):
-    if df is not None:
-        print(df.head())
-    else:
-        (f"Data frame vazio ou não carregou")
-
 if __name__ == "__main__":
     # URL da API
-    file_path = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json"
+    file_path = API_URL
     
     # Extrair dados e carregar no terminal
-    df = extract_data(file_path)
-    load_data(df)
+    df = get_data_from_api(file_path)
+
+   
 
