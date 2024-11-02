@@ -6,3 +6,4 @@ logs/
 *.xls
 .src
 config/config.py
+.ipynb
