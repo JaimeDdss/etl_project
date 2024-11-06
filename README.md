@@ -10,10 +10,7 @@ Este projeto tem como objetivo criar um Data Warehouse (DW) para armazenar e ana
 
 ### Ideia de ETL
 
-```mermaid
 graph LR;
     A[Extract] -->|Extrai Dados da API| B[Load]
-    B -->|Carrega Dados em memória| C[Pipeline]
-    C -->|Limpa e transforma os dados depois salva em parquet|
-   
-``` 
+    B -->|Carrega Dados de Arquivos CSV e XLS| C[Pipeline]
+    C -->|Limpa e Transforma os Dados, depois Salva em Parquet|
