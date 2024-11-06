@@ -1,6 +1,7 @@
 # Projeto de ETL de Commodities
 
-Este projeto tem como objetivo criar um Data Warehouse (DW) para armazenar e analisar dados de commodities, utilizando uma arquitetura moderna de ETL (Extract,Transform, Load). O projeto inclui:
+Este projeto tem como objetivo criar um arquivo parquet após a junção de três bases distintas e a realização de 
+cálculos de KPI's e Upsert dos dados:
 
 [Arquivo Parquet final](data)
 
@@ -10,7 +11,10 @@ Este projeto tem como objetivo criar um Data Warehouse (DW) para armazenar e ana
 
 ### Ideia de ETL
 
+
+
 graph LR;
     A[Extract] -->|Extrai Dados da API| B[Load]
-    B -->|Carrega Dados de Arquivos CSV e XLS| C[Pipeline]
-    C -->|Limpa e Transforma os Dados, depois Salva em Parquet|
+    B -->|Carrega Dados no DW| C[Pipeline]
+    C -->|Limpa e transforma os Dados depois salva em parquet|
+    
