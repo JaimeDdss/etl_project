@@ -3,10 +3,12 @@
 import os
 import sys
 import pandas as pd
+from datetime import datetime
 sys.path.append('../src')  # 
 from src.extract_data import get_data_from_api
 from src.load_data import get_data_from_files
 from config.config import API_URL, CSV_FILE_PATH1, XLS_FILE_PATH2
+
 
 def calculo_kpis():
     # chamando a funçao que extrai os dados da api e guarda num df
@@ -76,9 +78,42 @@ def calculo_kpis():
     # calculo do valor real 
     df_ipca['Real'] = df_ipca['À vista R$'] * (1 + (ipca_acum_dez_2022 - ipca_acum_atual) / 100)
     df_ipca['Real'] = df_ipca['Real'].round(2)
-    df_ipca = df_ipca[df_ipca['Real'].notna()]
 
-    return df_ipca
+    # mudando para data o tipo da coluna dt_cmdty
+    df_csv_copy['dt_cmdty'] = pd.to_datetime(df_csv_copy['dt_cmdty'])
+    # Renomeando a coluna data
+    df_ipca = df_ipca.rename(columns={'Data': 'dt_cmdty'})
 
-df_result = calculo_kpis()
-print(df_result.head())
+    # renomeando a coluna Real e calculando a var percentual
+    df_ipca["cmdty_var_mes_perc"] = df_ipca["Real"].pct_change()
+    df_ipca["cmdty_vl_rs_um"] = df_ipca["Real"]
+    # Dropna nas colunas selecionadas 
+    df_ipca = df_ipca[["dt_cmdty", "cmdty_vl_rs_um", "cmdty_var_mes_perc"]].dropna()
+
+    # Fazendo o upsert
+    df_final = pd.concat([df_csv_copy.set_index("dt_cmdty"), df_ipca.set_index("dt_cmdty")])
+    df_final = df_final[~df_final.index.duplicated(keep='last')].reset_index()
+    # valores padrão
+    valor1 = 'Boi_Gordo'
+    valor2 = 'Indicador do Boi Gordo CEPEA/B3'
+    valor3 = '15 Kg/carcaça'
+
+    # replicando os valores para o restante das linhas
+    df_final['nome_cmdty'] = df_final['nome_cmdty'].fillna(valor1)
+    df_final['tipo_cmdty'] = df_final['tipo_cmdty'].fillna(valor2)
+    df_final['cmdty_um'] = df_final['cmdty_um'].fillna(valor3)
+
+    # round limitado com duas casas decimais da coluna cmdty_var_mes_perc
+    df_final['cmdty_var_mes_perc'] = df_final['cmdty_var_mes_perc'].round(2)
+
+    ## preenchendo a dt_etl com a data de hoje
+    data_atual = datetime.today().strftime('%Y-%m-%d')
+    df_final['dt_etl'] = data_atual
+
+    df_final.to_parquet('upsert_boi_gordo_Vfinal.parquet', engine='pyarrow', compression='snappy', index=False)
+
+    
+    return df_final
+
+df_final = calculo_kpis()
+print(f'O arquivo parquet foi gerado com sucesso: \n {df_final.head()}')
