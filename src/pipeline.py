@@ -6,7 +6,7 @@ from datetime import datetime
 sys.path.append('../src')  # 
 from src.extract_data import get_data_from_api
 from src.load_data import get_data_from_files
-from config.config import API_URL, CSV_FILE_PATH1, XLS_FILE_PATH2
+from config.config import API_URL, CSV_FILE_PATH1, XLS_FILE_PATH2, OUTPUT_PATH
 
 # Definindo padrão de valores das colunas
 DEFAULT_VALUES = {
@@ -78,7 +78,7 @@ def upsert(df_csv_copy, df_ipca, default_values):
     return df_final
     
  # Função pipeline 
-def pipeline():
+def run_pipeline():
     # Extração e tratamento de dados
     df_api_copy = data_from_api(API_URL)
     df_csv, df_xls = get_data_from_files()
@@ -101,6 +101,6 @@ def pipeline():
  
 # Executando a função principal
 if __name__ == '__main__':
-    df_result = pipeline()
+    df_result = run_pipeline()
     print(f'Dados salvos com sucesso: \n {df_result.shape}')
     

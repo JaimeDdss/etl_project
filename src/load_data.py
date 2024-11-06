@@ -2,7 +2,7 @@
 # Imports
 import pandas as pd
 import os
-from config.config import CSV_FILE_PATH1, XLS_FILE_PATH2
+from config.config import CSV_FILE_PATH1, XLS_FILE_PATH2, API_URL, OUTPUT_PATH
 
 # função que carrega os dados csv e xls
 def get_data_from_files():
