@@ -14,10 +14,6 @@ cálculos de KPI's e Upsert dos dados:
 
 
 ```mermaid
-graph LR;
-    A[Extract] -->|Extrai Dados da API| B[Load]
-    B -->|Carrega Dados no DW| C[Transform]
-    C -->|Limpa e Transforma Dados, salva em parquet|
-    
+graph LR; A[Extract] -->|Extrai Dados da API| B[Load]; B -->|Carrega Dados de Arquivos CSV e XLS| C[Pipeline]; C -->|Limpa e Transforma os Dados, depois Salva em Parquet|   
 ``` 
     
