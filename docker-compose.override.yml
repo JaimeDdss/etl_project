@@ -1,0 +1,6 @@
+version: '3.8'
+
+services:
+  postgres:
+    ports:
+      - "5433:5432"  # Mapeie a porta local 5433 para a porta 5432 do contêiner
